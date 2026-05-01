@@ -87,7 +87,6 @@
       padding: 2rem 1.8rem 2.2rem;
     }
 
-    /* Mensagem de boas-vindas com detalhes do evento */
     .welcome-message {
       background: #fef9e6;
       padding: 1.2rem;
@@ -163,7 +162,7 @@
       font-size: 0.95rem;
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 14px 16px;
       border-radius: 40px;
@@ -175,7 +174,7 @@
       outline: none;
     }
 
-    input:focus, select:focus {
+    input:focus {
       border-color: #3c7840;
       box-shadow: 0 0 0 3px rgba(60, 120, 64, 0.2);
     }
@@ -344,7 +343,7 @@
 
 <script>
   // ============================================
-  // CONFIGURAÇÕES (ATUALIZADAS)
+  // CONFIGURAÇÕES
   // ============================================
   const SHEET_BEST_URL = "https://api.sheetbest.com/sheets/e4b73d8b-f904-4c9b-9d54-a9c75718e954";
   const SEU_EMAIL = "daniel2007pac@gmail.com";
@@ -394,18 +393,16 @@
     }
   }
   
-  // Enviar e-mail (via FormSubmit.co)
+  // Enviar e-mail (via FormSubmit.co) - sem campo de email do convidado
   async function enviarEmail(dados) {
     try {
       const formData = new FormData();
       formData.append("nome", dados.nome);
-      formData.append("email_convidado", dados.email);
       formData.append("whatsapp", dados.whatsapp);
       formData.append("presenca", dados.presenca);
       formData.append("data_hora", dados.data_hora);
       formData.append("_subject", `📋 NOVA CONFIRMAÇÃO - ${dados.nome} - ${dados.presenca === "sim" ? "✅ VIRÁ" : "❌ NÃO VIRÁ"}`);
       formData.append("_to", SEU_EMAIL);
-      formData.append("_replyto", dados.email);
       
       const response = await fetch("https://formsubmit.co/ajax/" + SEU_EMAIL, {
         method: "POST",
@@ -424,24 +421,17 @@
     
     // Coleta os dados
     const nome = document.getElementById("nome").value.trim();
-    const email = document.getElementById("email").value.trim();
     const whatsapp = document.getElementById("whatsapp").value.trim();
     const presencaRadio = document.querySelector('input[name="presenca"]:checked');
     
-    if (!nome || !email || !whatsapp || !presencaRadio) {
+    if (!nome || !whatsapp || !presencaRadio) {
       showToast("❌ Por favor, preencha todos os campos obrigatórios", true);
-      return;
-    }
-    
-    if (!email.includes("@") || !email.includes(".")) {
-      showToast("❌ Digite um e-mail válido", true);
       return;
     }
     
     const dados = {
       data_hora: new Date().toLocaleString("pt-BR"),
       nome: nome,
-      email: email,
       whatsapp: whatsapp,
       presenca: presencaRadio.value,
       status: presencaRadio.value === "sim" ? "Confirmado - Virá" : "Não virá"
@@ -470,7 +460,7 @@
       // Limpa o formulário
       form.reset();
       
-      // Opcional: scroll suave para o topo
+      // Scroll suave para o topo
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       showToast("❌ Erro ao enviar. Tente novamente ou nos avise pelo WhatsApp.", true);
